@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kas Kelas Multi-Kas</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <main id="loginPage" class="page-center">
+    <section class="auth-card">
+      <div class="logo">K</div>
+      <h1>Kas Kelas</h1>
+      <p class="subtitle">Multi-kas • Bendahara & Viewer</p>
+
+      <div class="field">
+        <label>Username</label>
+        <input id="loginUsername" type="text" placeholder="Masukkan username">
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input id="loginPassword" type="password" placeholder="Masukkan password">
+      </div>
+
+      <button class="primary-btn" onclick="login()">LOGIN</button>
+      <p id="loginMessage" class="message"></p>
+
+      <p class="auth-link">
+        Belum punya akun?
+        <button class="text-btn" onclick="openSignup()">Buat akun</button>
+      </p>
+
+      <button class="text-btn" onclick="openForgot()">Lupa password?</button>
+
+      <div class="demo-info">
+        <b>Akun demo</b>
+        <span>admin / 12345 → Bendahara Kas 10 RPL 1</span>
+        <span>viewer / 12345 → Viewer semua kas</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- SIGNUP -->
+  <div id="signupModal" class="modal">
+    <section class="modal-card">
+      <button class="close-btn" onclick="closeSignup()">×</button>
+      <h2>Buat Akun</h2>
+      <p class="subtitle">Akun baru otomatis menjadi Viewer.</p>
+
+      <div class="field">
+        <label>Username</label>
+        <input id="signupUsername" type="text" placeholder="Username">
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input id="signupPassword" type="password" placeholder="Password">
+      </div>
+
+      <div class="field">
+        <label>Konfirmasi Password</label>
+        <input id="signupConfirm" type="password" placeholder="Ulangi password">
+      </div>
+
+      <button class="primary-btn" onclick="registerViewer()">BUAT AKUN VIEWER</button>
+      <p id="signupMessage" class="message"></p>
+    </section>
+  </div>
+
+  <!-- FORGOT -->
+  <div id="forgotModal" class="modal">
+    <section class="modal-card">
+      <button class="close-btn" onclick="closeForgot()">×</button>
+      <h2>Reset Password</h2>
+      <p class="subtitle">Hanya untuk akun yang sudah terdaftar.</p>
+
+      <div class="field">
+        <label>Username</label>
+        <input id="forgotUsername" type="text" placeholder="Username">
+      </div>
+
+      <div class="field">
+        <label>Password Baru</label>
+        <input id="forgotPassword" type="password" placeholder="Password baru">
+      </div>
+
+      <div class="field">
+        <label>Konfirmasi Password</label>
+        <input id="forgotConfirm" type="password" placeholder="Ulangi password">
+      </div>
+
+      <button class="primary-btn" onclick="resetPassword()">UBAH PASSWORD</button>
+      <p id="forgotMessage" class="message"></p>
+    </section>
+  </div>
+
+  <!-- DASHBOARD -->
+  <main id="dashboardPage" class="dashboard-page">
+    <section class="app-shell">
+
+      <header class="topbar">
+        <div>
+          <span class="eyebrow">SISTEM KAS KELAS</span>
+          <h2 id="dashboardTitle">Dashboard</h2>
+          <p id="currentUser" class="muted"></p>
+        </div>
+        <button class="logout-btn" onclick="logout()">LOGOUT</button>
+      </header>
+
+      <!-- PILIH KAS -->
+      <section class="kas-selector">
+        <div>
+          <label for="kasSelect">Kas yang sedang dilihat</label>
+          <select id="kasSelect" onchange="selectKas(this.value)"></select>
+        </div>
+        <div id="kasOwnerInfo" class="owner-info"></div>
+      </section>
+
+      <!-- RINGKASAN -->
+      <section class="summary-grid">
+        <div class="summary-card saldo">
+          <span>Saldo</span>
+          <strong id="saldoDisplay">Rp 0</strong>
+        </div>
+        <div class="summary-card">
+          <span>Sudah Bayar</span>
+          <strong id="sudahBayarDisplay">0</strong>
+        </div>
+        <div class="summary-card">
+          <span>Belum Bayar</span>
+          <strong id="belumBayarDisplay">0</strong>
+        </div>
+        <div class="summary-card">
+          <span>Jumlah Siswa</span>
+          <strong id="jumlahSiswaDisplay">0</strong>
+        </div>
+      </section>
+
+      <!-- VIEWER -->
+      <section id="viewerNotice" class="notice viewer-only">
+        <b>Mode Viewer</b>
+        <span>Kamu hanya dapat melihat catatan. Kamu tidak dapat menambah, mengedit, atau menghapus transaksi.</span>
+      </section>
+
+      <!-- FORM BENDAHARA -->
+      <section id="transactionForm" class="panel">
+        <div class="panel-title">
+          <div>
+            <h3>Catat Transaksi</h3>
+            <p>Kelola transaksi untuk kas yang kamu miliki.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Jenis Transaksi</label>
+            <select id="transactionType" onchange="changeTransactionForm()">
+              <option value="masuk">Uang Masuk</option>
+              <option value="keluar">Uang Keluar</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label id="detailLabel">Nama Siswa</label>
+            <select id="transactionDetail"></select>
+          </div>
+
+          <div id="statusField" class="field">
+            <label>Status Pembayaran</label>
+            <select id="paymentStatus">
+              <option value="sudah">Sudah Bayar</option>
+              <option value="belum">Belum Bayar</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Tanggal</label>
+            <input id="transactionDate" type="date">
+          </div>
+
+          <div class="field">
+            <label>Nominal (Rp)</label>
+            <input id="transactionAmount" type="number" min="1" placeholder="10000">
+          </div>
+        </div>
+
+        <button class="save-btn" onclick="addTransaction()">CATAT TRANSAKSI</button>
+      </section>
+
+      <!-- RIWAYAT -->
+      <section class="panel">
+        <div class="panel-title">
+          <div>
+            <h3>Riwayat Transaksi</h3>
+            <p id="historySubtitle">Catatan kas yang dipilih.</p>
+          </div>
+          <button id="deleteAllBtn" class="danger-btn" onclick="deleteAllTransactions()">Hapus Semua</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Nama / Event</th>
+                <th>Tipe</th>
+                <th>Status</th>
+                <th>Nominal</th>
+                <th id="actionHeader">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="transactionTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
